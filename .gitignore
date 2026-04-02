@@ -1,0 +1,13 @@
+# Output data (CSVs, videos, plots, frames)
+*/output/*.csv
+*/output/*.mp4
+*/output/*.png
+*/output/frames/
+
+# Python
+__pycache__/
+*.pyc
+
+# Temp check scripts
+check_tilts.py
+check_api.py

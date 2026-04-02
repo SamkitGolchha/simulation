@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://api.projectchrono.org/classchrono_1_1ChVector3d.html\")",
+      "Bash(curl -s \"https://api.projectchrono.org/classchrono_1_1ChLinkMotorLinearSpeed.html\")",
+      "Bash(curl -s \"https://api.projectchrono.org/classchrono_1_1ChFunctionConst.html\")",
+      "Bash(conda list:*)",
+      "WebSearch",
+      "Bash(python:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.projectchrono.org)",
+      "Bash(conda run:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
