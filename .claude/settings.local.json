@@ -10,7 +10,9 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:api.projectchrono.org)",
       "Bash(conda run:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(rm -rf Sanity_Test/.git)"
     ]
   }
 }

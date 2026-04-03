@@ -20,7 +20,9 @@ Read CLAUDE.md in this directory and ../Sanity_Test/CLAUDE.md for code conventio
   12 octahedra (body_id 0–11), 4 bottom spheres (12–15), and 4 top spheres (16–19)
   — 20 bodies total. Do not hardcode body counts; read them from the CSV.
 - Import octahedron geometry from the Sanity_Test simulation module for mesh rendering.
-- The visualizer camera must auto-fit to the larger scene.
+- The visualizer camera must auto-fit to the larger scene. NOTE: with force-based BCs,
+  ALL bodies (including bottom spheres) may drift in X,Y as octahedra tilt. Use
+  `pl.reset_camera()` each frame to accommodate the potentially wider scene.
 - Do NOT touch simulation_2x2x3.py. Do NOT write tests.
 - Create a to do before starting
-- Update (../../progress_gui-vize.md)after every completed step.
+- Update (../../progress_gui-vize.md) after every completed step.

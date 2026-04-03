@@ -1,5 +1,5 @@
 # PyChrono rigid-body simulation of a 2x2x3 lattice of 12 octahedra connected by ball joints.
-# Per-column boundary conditions: bottom spheres grounded, top spheres driven downward at 0.01 u/s.
+# Force-based BCs: collision ground plane supports bottom spheres, ChForce loads top spheres downward.
 # Runs 5 independent simulations with random perturbations on an interior octahedron, exports CSV.
 
 import csv
@@ -144,18 +144,27 @@ def _find_shared_vertices(
 
 def build_system(
     perturbation_seed: int,
-) -> tuple[chrono.ChSystemNSC, list[chrono.ChBody], list[str], int]:
-    """Build the 2x2x3 lattice system with all joints and boundary conditions."""
+) -> tuple[chrono.ChSystemNSC, list[chrono.ChBody], list[str], int, list[chrono.ChBody]]:
+    """Build the 2x2x3 lattice system with ball joints, collision ground, and top forces."""
     a = EDGE_LENGTH
     r = a / math.sqrt(2.0)
 
-    # Create system
+    # Create system with Bullet collision solver
     system = chrono.ChSystemNSC()
     system.SetGravitationalAcceleration(chrono.ChVector3d(0.0, 0.0, -9.81))
+    system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
 
-    # Ground body (fixed anchor)
+    # Ground body with collision floor at Z = -r (initial bottom sphere Z)
     ground = chrono.ChBody()
     ground.SetFixed(True)
+    ground.EnableCollision(True)
+    floor_z = -r
+    ground_mat = chrono.ChContactMaterialNSC()
+    ground_shape = chrono.ChCollisionShapeBox(ground_mat, 100.0, 100.0, 0.1)
+    ground.AddCollisionShape(
+        ground_shape,
+        chrono.ChFramed(chrono.ChVector3d(0.0, 0.0, floor_z - 0.05)),
+    )
     system.AddBody(ground)
 
     # -------------------------------------------------------------------
@@ -209,10 +218,11 @@ def build_system(
         bot_spheres.append(bot_sph)
         bot_names.append(f"bot_sphere_{cix}{ciy}")
 
-        # Ground the bottom sphere
-        fix_link = chrono.ChLinkMateFix()
-        fix_link.Initialize(bot_sph, ground)
-        system.AddLink(fix_link)
+        # Enable collision on bottom sphere (supported by ground plane contact)
+        bot_sph.EnableCollision(True)
+        bot_col_mat = chrono.ChContactMaterialNSC()
+        bot_col_shape = chrono.ChCollisionShapeSphere(bot_col_mat, 0.05)
+        bot_sph.AddCollisionShape(bot_col_shape)
 
         # Ball joint: bottom sphere <-> iz=0 octahedron
         _add_ball_joint(system, bot_sph, oct_bodies[flat_bot], bot_vertex)
@@ -231,14 +241,13 @@ def build_system(
         _add_ball_joint(system, oct_bodies[flat_top], top_sph, top_vertex)
         joint_count += 1
 
-        # Drive the top sphere downward via ChLinkMotorLinearSpeed
-        motor = chrono.ChLinkMotorLinearSpeed()
-        motor_frame = chrono.ChFramed(
-            chrono.ChVector3d(top_vertex[0], top_vertex[1], top_vertex[2])
-        )
-        motor.Initialize(top_sph, ground, motor_frame)
-        motor.SetSpeedFunction(chrono.ChFunctionConst(-0.01))  # 0.01 units/s downward
-        system.AddLink(motor)
+        # Constant downward force on top sphere (ChForce must be added before configuring)
+        top_force = chrono.ChForce()
+        top_sph.AddForce(top_force)
+        top_force.SetMode(chrono.ChForce.FORCE)
+        top_force.SetAlign(chrono.ChForce.WORLD_DIR)
+        top_force.SetDir(chrono.ChVector3d(0.0, 0.0, -1.0))
+        top_force.SetMforce(5.0)  # 5 N downward, tunable
 
     print(f"  Total ball joints (inter-oct + sphere-oct): {joint_count}")
 
@@ -263,7 +272,7 @@ def build_system(
         chrono.ChVector3d(float(omega[0]), float(omega[1]), float(omega[2]))
     )
 
-    return system, all_bodies, all_names, joint_count
+    return system, all_bodies, all_names, joint_count, top_spheres
 
 
 # ---------------------------------------------------------------------------
@@ -278,7 +287,7 @@ def run_single(
     export_interval: int = 500,
 ) -> tuple[str, int]:
     """Build a fresh system, step it for duration seconds, write body states to csv_path."""
-    system, bodies, body_names, joint_count = build_system(seed)
+    system, bodies, body_names, joint_count, _top_spheres = build_system(seed)
 
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
 

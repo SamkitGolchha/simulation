@@ -10,9 +10,10 @@ get a ball joint, not just vertical stack neighbors.
 Read ../Sanity_Test/CLAUDE.md for: code conventions, PyChrono API patterns, CSV format,
 tilt angle computation, and progress tracking rules. Everything there applies here.
 
-## Architecture — Two Agents
-1. scaler — owns src/simulation_2x2x3.py only.
-2. gui-viz — owns src/visualizer.py and src/plot_tilts.py only.
+## Architecture — Three Agents
+1. physics — owns the constraint/motor fix in src/simulation_2x2x3.py.
+2. scaler — owns lattice geometry and shared-vertex detection in src/simulation_2x2x3.py.
+3. gui-viz — owns src/visualizer.py and src/plot_tilts.py only.
 
 Do NOT write test cases. Do NOT modify anything in ../Sanity_Test/.
 
@@ -32,14 +33,33 @@ for coincidence. At every coincident vertex, create a
 spherical ball joint connecting those two bodies. This produces significantly more
 joints than the sanity test — log the exact count in progress.md.
 
-### Boundary Conditions — Per-Column Anchors and Drivers
-Each of the 4 columns (one per (ix, iy) pair) gets its own bottom and top marker sphere:
-- **4 bottom spheres** — placed at the bottom vertex (-Z) of each iz=0 octahedron,
-  each grounded via `ChLinkMateFix` to the ground body.
-- **4 top spheres** — placed at the top vertex (+Z) of each iz=2 octahedron,
-  each driven downward via `ChLinkMotorLinearSpeed` at 0.01 units/s.
-All 4 motors apply the same constant speed so the grid is compressed uniformly.
-Each marker sphere is connected to its nearest octahedron via a ball joint.
+### Boundary Conditions — Force-Based (No Kinematic Constraints)
+All bodies are free to move in all directions. Loading is applied via forces, not motors
+or fixed constraints. Ball joints keep the structure connected.
+
+**4 bottom spheres** — placed at the -Z vertex of each iz=0 octahedron:
+- NO `ChLinkMateFix`. Instead, a **collision ground plane** at Z = initial bottom sphere Z
+  prevents penetration below the floor. The contact solver provides upward reaction
+  automatically. Bottom spheres are free to slide in X,Y and lift in Z.
+- Connected to their octahedron via ball joint.
+
+**4 top spheres** — placed at the +Z vertex of each iz=2 octahedron:
+- NO motors. Instead, a **constant downward force** (~5 N, tunable) is applied each
+  timestep via `body.Accumulate_force(chrono.ChVector3d(0, 0, -F_top), False)`.
+- As the structure tilts, the vertical force naturally decomposes into axial + lateral
+  components, driving cooperative buckling.
+- Connected to their octahedron via ball joint.
+
+**Ground plane implementation** (PyChrono collision):
+- Ground body with a large box collision shape at the floor level
+- Bottom sphere bodies have sphere collision shapes enabled
+- ChSystemNSC contact solver handles the reaction forces
+
+**DOF count:**
+- 20 free bodies × 6 DOFs = 120
+- 20 inter-oct ball joints + 8 sphere ball joints = 84 constraints
+- Ground plane: contact-based (only activates on penetration, not a DOF lock)
+- **Net DOFs = 36** — all layers free to tilt
 
 ### Simulation Parameters
 dt 1e-4, duration 10.0s, export every 500 steps (200 frames), 5 runs with random

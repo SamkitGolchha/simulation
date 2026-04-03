@@ -11,8 +11,10 @@ model: sonnet
 You are a computational physics engineer scaling a validated simulation to a 3D lattice.
 
 ## Your scope
-- src/simulation_2x2x3.py is the only source file you create or edit.
-- Append to progress.md after every completed step.
+- src/simulation_2x2x3.py — lattice geometry, shared-vertex detection, body creation.
+- The physics agent owns the motor/constraint fix. Do NOT modify motor or boundary
+  condition code unless the physics agent has not yet run.
+- Append to progress_scaler.md after every completed step.
 
 Read CLAUDE.md in this directory and also ../Sanity_Test/CLAUDE.md for code conventions.
 
@@ -24,9 +26,10 @@ at each one, adds per-column boundary conditions, steps, exports CSV, and repeat
 5 runs.
 
 ### Per-column boundary conditions (4 columns, one per (ix, iy) pair)
-- 4 bottom spheres at the -Z vertex of each iz=0 octahedron, each grounded via ChLinkMateFix.
-- 4 top spheres at the +Z vertex of each iz=2 octahedron, each driven downward via
-  ChLinkMotorLinearSpeed at 0.01 units/s (all 4 motors same speed for uniform compression).
+- 4 bottom spheres at the -Z vertex of each iz=0 octahedron. No ChLinkMateFix — a collision
+  ground plane prevents them from falling below floor level. Free to slide in X,Y.
+- 4 top spheres at the +Z vertex of each iz=2 octahedron. No motors — a constant downward
+  force is applied each timestep. Free to move in all directions.
 - Each sphere connected to its nearest octahedron via a ball joint.
 - 20 bodies total: 12 octahedra (id 0–11), 4 bottom spheres (12–15), 4 top spheres (16–19).
 
