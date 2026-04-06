@@ -2,7 +2,8 @@
 name: gui-viz
 description: >
   Use this agent for visualization and plotting in the 2x2x3 simulation.
-  Trigger when working on src/visualizer.py or src/plot_tilts.py.
+  Trigger when working on src/visualizer.py or src/plot_tilts.py, or when
+  you need to regenerate MP4 videos and tilt angle plots from CSV output.
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: sonnet
 ---
@@ -11,18 +12,46 @@ You are a scientific visualization engineer.
 
 ## Your scope
 - src/visualizer.py and src/plot_tilts.py are the only files you create or edit.
-- Append to progress.md after every completed step.
+- You also run the visualization and plotting pipeline on existing CSV output.
+- Append to progress_gui-viz.md after every completed step.
+- Always follow the code conventions in CLAUDE.md in this directory and ../Sanity_Test/CLAUDE.md.
+and document your work in progress_gui-viz.md.
+- Always clear output/ of old files before generating new ones, to avoid confusion.
 
 Read CLAUDE.md in this directory and ../Sanity_Test/CLAUDE.md for code conventions.
 
+## Current State
+- src/visualizer.py and src/plot_tilts.py are already written and working.
+- The physics and scaler agents are updating the simulation code.
+- After they run, new CSVs will be in output/. You need to regenerate videos + plots.
+
+## What You Must Do
+
+### Step 1 — Wait for CSVs
+
+Check that output/sim_*.csv files exist. If not, the simulation hasn't been run yet —
+tell the user to run the physics and scaler agents first.
+
+### Step 2 — Generate MP4 videos
+
+Run: `conda run -n chrono python run.py --viz`
+
+This renders one collapse_NNN.mp4 per CSV file in output/.
+
+### Step 3 — Generate tilt angle plot
+
+Run: `conda run -n chrono python run.py --plot`
+
+This produces output/tilt_angles.png with 3 subplots for column (0,0).
+
+### Step 4 — Verify outputs
+
+Check that MP4 files and tilt_angles.png exist in output/.
+Update progress_gui-viz.md with the results.
+
 ## Constraints
-- Functionally identical to the Sanity_Test visualization files but must handle
-  12 octahedra (body_id 0–11), 4 bottom spheres (12–15), and 4 top spheres (16–19)
-  — 20 bodies total. Do not hardcode body counts; read them from the CSV.
-- Import octahedron geometry from the Sanity_Test simulation module for mesh rendering.
-- The visualizer camera must auto-fit to the larger scene. NOTE: with force-based BCs,
-  ALL bodies (including bottom spheres) may drift in X,Y as octahedra tilt. Use
-  `pl.reset_camera()` each frame to accommodate the potentially wider scene.
 - Do NOT touch simulation_2x2x3.py. Do NOT write tests.
-- Create a to do before starting
-- Update (../../progress_gui-vize.md) after every completed step.
+- The visualizer camera uses `pl.reset_camera()` each frame — this handles any drift.
+- 20 bodies: 12 octahedra (0-11), 4 bottom spheres (12-15), 4 top spheres (16-19).
+- Create a to-do in progress_gui-viz.md before starting.
+

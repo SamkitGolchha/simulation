@@ -46,13 +46,26 @@ def _make_octahedron_body(
     mass: float = 1.0,
     a: float = EDGE_LENGTH,
 ) -> chrono.ChBody:
-    """Create a ChBody representing a regular octahedron, add it to system, and return it."""
+    """Create a ChBody for a regular octahedron with convex-hull collision for edge-edge contact stops."""
     body = chrono.ChBody()
     body.SetPos(chrono.ChVector3d(center[0], center[1], center[2]))
     body.SetMass(mass)
     Ixx, Iyy, Izz = octahedron_inertia(mass, a)
     body.SetInertiaXX(chrono.ChVector3d(Ixx, Iyy, Izz))
     body.SetInertiaXY(chrono.ChVector3d(0.0, 0.0, 0.0))
+
+    # Convex-hull collision shape for edge-edge contact stops during tilting
+    r = a / math.sqrt(2.0)
+    pts = chrono.vector_ChVector3d()
+    for lx, ly, lz in [(r,0,0),(-r,0,0),(0,r,0),(0,-r,0),(0,0,r),(0,0,-r)]:
+        pts.push_back(chrono.ChVector3d(lx, ly, lz))
+    col_mat = chrono.ChContactMaterialNSC()
+    col_mat.SetFriction(0.5)
+    col_mat.SetRestitution(0.0)
+    hull = chrono.ChCollisionShapeConvexHull(col_mat, pts)
+    body.AddCollisionShape(hull)
+    body.EnableCollision(True)
+
     system.AddBody(body)
     return body
 
@@ -108,6 +121,71 @@ def _body_name_oct(ix: int, iy: int, iz: int) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Kinetic energy equilibrium detector
+# ---------------------------------------------------------------------------
+
+def _compute_total_ke(bodies: list[chrono.ChBody]) -> float:
+    """Compute total kinetic energy (translational + rotational) of all bodies."""
+    total_ke = 0.0
+    for b in bodies:
+        v = b.GetPosDt()
+        w = b.GetAngVelLocal()
+        m = b.GetMass()
+        total_ke += 0.5 * m * (v.x**2 + v.y**2 + v.z**2)
+        I = b.GetInertiaXX()
+        total_ke += 0.5 * (I.x * w.x**2 + I.y * w.y**2 + I.z * w.z**2)
+    return total_ke
+
+
+# ---------------------------------------------------------------------------
+# Column-collapse stop condition
+# ---------------------------------------------------------------------------
+
+def _check_columns_collapsed(
+    oct_bodies: list[chrono.ChBody],
+    a: float = EDGE_LENGTH,
+    tol: float = 0.1,
+) -> bool:
+    """Return True when all 4 columns have both adjacent pairs collapsed (vertices touching)."""
+    r = a / math.sqrt(2.0)
+    columns = [(0, 0), (1, 0), (0, 1), (1, 1)]
+
+    for (ix, iy) in columns:
+        column_collapsed = True
+        for iz in range(2):  # pairs (0,1) and (1,2)
+            lower = ix + 2 * iy + 4 * iz
+            upper = ix + 2 * iy + 4 * (iz + 1)
+
+            # +Z vertex of lower body in world frame
+            lower_top = oct_bodies[lower].TransformPointLocalToParent(
+                chrono.ChVector3d(0, 0, r)
+            )
+            # -Z vertex of upper body in world frame
+            upper_bot = oct_bodies[upper].TransformPointLocalToParent(
+                chrono.ChVector3d(0, 0, -r)
+            )
+            axial_dist = (lower_top - upper_bot).Length()
+
+            # +X vertex of both bodies in world frame
+            lower_x = oct_bodies[lower].TransformPointLocalToParent(
+                chrono.ChVector3d(r, 0, 0)
+            )
+            upper_x = oct_bodies[upper].TransformPointLocalToParent(
+                chrono.ChVector3d(r, 0, 0)
+            )
+            equat_dist = (lower_x - upper_x).Length()
+
+            if not (axial_dist < tol and equat_dist < tol):
+                column_collapsed = False
+                break
+
+        if not column_collapsed:
+            return False
+
+    return True
+
+
+# ---------------------------------------------------------------------------
 # Shared vertex detection
 # ---------------------------------------------------------------------------
 
@@ -153,6 +231,7 @@ def build_system(
     system = chrono.ChSystemNSC()
     system.SetGravitationalAcceleration(chrono.ChVector3d(0.0, 0.0, -9.81))
     system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
+    system.GetSolver().AsIterative().SetMaxIterations(150)
 
     # Ground body with collision floor at Z = -r (initial bottom sphere Z)
     ground = chrono.ChBody()
@@ -247,7 +326,7 @@ def build_system(
         top_force.SetMode(chrono.ChForce.FORCE)
         top_force.SetAlign(chrono.ChForce.WORLD_DIR)
         top_force.SetDir(chrono.ChVector3d(0.0, 0.0, -1.0))
-        top_force.SetMforce(5.0)  # 5 N downward, tunable
+        top_force.SetMforce(0.5)  # 0.5 N downward, tunable
 
     print(f"  Total ball joints (inter-oct + sphere-oct): {joint_count}")
 
@@ -266,7 +345,7 @@ def build_system(
     rng = np.random.default_rng(perturbation_seed)
     perturb_dir = rng.standard_normal(3)
     perturb_dir /= np.linalg.norm(perturb_dir)
-    perturb_mag = 0.01  # rad/s
+    perturb_mag = 0.02  # rad/s
     omega = perturb_mag * perturb_dir
     oct_bodies[perturb_flat].SetAngVelParent(
         chrono.ChVector3d(float(omega[0]), float(omega[1]), float(omega[2]))
@@ -282,20 +361,39 @@ def build_system(
 def run_single(
     seed: int,
     csv_path: str,
-    dt: float = 1e-4,
+    dt: float = 5e-5,
     duration: float = 10.0,
-    export_interval: int = 500,
+    export_interval: int = 250,
 ) -> tuple[str, int]:
     """Build a fresh system, step it for duration seconds, write body states to csv_path."""
     system, bodies, body_names, joint_count, _top_spheres = build_system(seed)
+    oct_bodies = bodies[:12]  # first 12 bodies are octahedra
 
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
 
     n_steps = int(duration / dt)
     rows: list[list[Any]] = []
+    stopped_early = False
+
+    # Equilibrium detector: sustained low KE for N consecutive export checks.
+    # With collision + damping, the system reaches a steady-state KE of ~0.001 J.
+    # We detect equilibrium when KE stays below ke_threshold for ke_consec_required
+    # consecutive export steps (each step = export_interval * dt seconds apart).
+    ke_threshold = 0.01  # Joules; relaxed — numerical jiggling keeps KE above 1e-6
+    ke_consec_required = 40  # 40 * 250 * 5e-5 = 0.50 s of sustained low KE
+    ke_consec_count = 0
 
     for step_idx in range(n_steps):
         system.DoStepDynamics(dt)
+
+        # Manual velocity damping (PyChrono lacks SetLinearDamping/SetAngularDamping)
+        # Scale linear and angular velocities by 0.9999 every 10 steps (~0.01% per step)
+        if step_idx % 10 == 0:
+            for b in bodies:
+                v = b.GetPosDt()
+                b.SetPosDt(chrono.ChVector3d(v.x*0.9999, v.y*0.9999, v.z*0.9999))
+                w = b.GetAngVelLocal()
+                b.SetAngVelLocal(chrono.ChVector3d(w.x*0.9999, w.y*0.9999, w.z*0.9999))
 
         if step_idx % export_interval == 0:
             t = system.GetChTime()
@@ -314,6 +412,39 @@ def run_single(
                     f"{q.e2:.8f}",
                     f"{q.e3:.8f}",
                 ])
+
+            # Check equilibrium: sustained low kinetic energy after initial transient
+            if t > 2.0:
+                # Require minimum tilt before checking equilibrium
+                max_tilt = 0.0
+                for ob in oct_bodies:
+                    q = ob.GetRot()
+                    z_z = 1.0 - 2.0 * (q.e1**2 + q.e2**2)
+                    tilt = math.acos(max(-1.0, min(1.0, z_z)))
+                    max_tilt = max(max_tilt, tilt)
+                if max_tilt > math.radians(30.0):
+                    total_ke = _compute_total_ke(bodies)
+                    if total_ke < ke_threshold:
+                        ke_consec_count += 1
+                    else:
+                        ke_consec_count = 0
+                    if ke_consec_count >= ke_consec_required:
+                        print(f"  Equilibrium reached at t = {t:.6f} s (step {step_idx})"
+                              f" — KE < {ke_threshold} for {ke_consec_required} consecutive checks"
+                              f" — max tilt = {math.degrees(max_tilt):.1f} deg")
+                        stopped_early = True
+                        break
+
+            # Check column-collapse stop condition
+            if _check_columns_collapsed(oct_bodies):
+                print(f"  All columns collapsed at t = {t:.6f} s (step {step_idx})")
+                stopped_early = True
+                break
+
+    if stopped_early:
+        print("  Simulation stopped early.")
+    else:
+        print("  Simulation ran to completion (no early stop).")
 
     with open(csv_path, "w", newline="") as fh:
         writer = csv.writer(fh)

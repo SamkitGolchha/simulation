@@ -12,7 +12,11 @@
       "Bash(conda run:*)",
       "Bash(git add:*)",
       "Bash(git rm:*)",
-      "Bash(rm -rf Sanity_Test/.git)"
+      "Bash(rm -rf Sanity_Test/.git)",
+      "Bash(ls -la \"C:\\\\Users\\\\samki\\\\OneDrive\\\\Desktop\\\\Research\\\\Simulation\\\\2x2x3_simulation\\\\output\\\\sim_\"*.csv)",
+      "Bash(rm -f output/collapse_*.mp4 output/tilt_angles.png)",
+      "Bash(rm -rf output/frames)",
+      "Bash(ls -la \"C:/Users/samki/OneDrive/Desktop/Research/Simulation/2x2x3_simulation/output/\"*.mp4)"
     ]
   }
 }

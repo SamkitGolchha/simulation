@@ -11,9 +11,23 @@ Read ../Sanity_Test/CLAUDE.md for: code conventions, PyChrono API patterns, CSV 
 tilt angle computation, and progress tracking rules. Everything there applies here.
 
 ## Architecture — Three Agents
-1. physics — owns the constraint/motor fix in src/simulation_2x2x3.py.
-2. scaler — owns lattice geometry and shared-vertex detection in src/simulation_2x2x3.py.
-3. gui-viz — owns src/visualizer.py and src/plot_tilts.py only.
+1. physics — owns collision shapes, stop condition, and contact logic in src/simulation_2x2x3.py.
+2. scaler — owns parameter tuning (force, dt, export interval, perturbation) in src/simulation_2x2x3.py.
+3. gui-viz — owns src/visualizer.py and src/plot_tilts.py, and runs the viz/plot pipeline.
+
+## Current Task — Collision + Stop Condition (run agents in order: scaler, physics, gui-viz)
+
+### What's wrong
+Octahedra have no collision geometry — they pass through each other. The structure
+over-buckles past 150 deg after ~2s. The first ~2s of behavior look correct.
+
+### What needs to happen
+1. **scaler**: Reduce F_top from 5.0N to 0.5N, dt from 1e-4 to 5e-5, export_interval
+   from 500 to 250, perturbation from 0.01 to 0.005 rad/s.
+2. **physics**: Add collision shapes to top spheres. Add `_check_columns_collapsed()`
+   stop condition — when adjacent octahedra in ALL 4 columns have both their axial (+Z/-Z)
+   and equatorial (+X) vertices within tolerance (0.1), stop the simulation early.
+3. **gui-viz**: After new CSVs are generated, re-render MP4 videos and tilt angle plots.
 
 Do NOT write test cases. Do NOT modify anything in ../Sanity_Test/.
 

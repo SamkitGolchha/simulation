@@ -79,3 +79,53 @@
 - **Bottom spheres**: z_final >= z_init in all cases (dz = +0.01 to +0.08). Ground plane collision prevents fall-through.
 - **Top spheres**: dz ~ -8.0 to -8.4 units over 10s (gravity + applied force)
 - Structure ultimately buckles completely (tilts > 90 deg) because ball joints provide zero rotational stiffness -- physically correct for a pin-jointed mechanism under gravity + axial force
+
+### Parameter reduction for gradual buckling (2026-04-03)
+
+**Problem**: With F_top=5.0N, dt=1e-4, and perturb=0.01 rad/s, the structure over-buckles past 150 deg within ~2s. Octahedra also pass through each other (no collision shapes yet).
+
+**Changes made** (scaler agent, Steps 1-3):
+1. **Top force**: `SetMforce(5.0)` -> `SetMforce(0.5)` -- 10x reduction. Total applied load drops from 20N to 2.0N (4 spheres x 0.5N). Structure should tilt gradually under gentler loading.
+2. **Perturbation**: `perturb_mag = 0.01` -> `perturb_mag = 0.005` -- halved to match gentler loading.
+3. **Timestep**: `dt = 1e-4` -> `dt = 5e-5` -- halved for better collision stability (physics agent will add collision shapes next).
+4. **Export interval**: `export_interval = 500` -> `export_interval = 250` -- exports every 0.0125s instead of 0.05s (4x finer temporal resolution at the new dt).
+
+**Step 4 (run & verify)**: Deferred -- physics agent must add collision shapes and stop condition before running.
+
+### Velocity damping (2026-04-04)
+
+**Problem**: No velocity damping on any body. Oscillatory energy from perturbations, gravity swinging, and solver artifacts persists indefinitely, preventing smooth settling to equilibrium.
+
+**API check**: `SetLinearDamping` and `SetAngularDamping` do NOT exist in the installed PyChrono version (confirmed via `hasattr()` test on `chrono.ChBody()`).
+
+**Fallback implemented**: Manual velocity scaling in the `run_single()` time loop. Every 10 timesteps, all 20 bodies have their linear velocity (`GetPosDt`/`SetPosDt`) and angular velocity (`GetAngVelLocal`/`SetAngVelLocal`) scaled by factor 0.999. This provides gentle damping (~0.1% velocity reduction per 10 steps) without altering the structural mechanics.
+
+**Damping parameters**:
+- Scale factor: 0.999
+- Application frequency: every 10 steps
+- Applied to: all 20 bodies (12 octahedra + 4 bottom spheres + 4 top spheres)
+- Effective damping rate: ~0.05% per timestep on average
+
+**Tuning notes** (from scaler.md): If tilts plateau too quickly, reduce damping (increase factor toward 1.0). If oscillations persist, increase damping (decrease factor toward 0.99). Current 0.999 is the recommended starting value.
+
+**No simulation run**: Physics agent will run the full simulation after its changes.
+
+### Damping factor reduction: 0.999 -> 0.9999 (2026-04-04)
+
+**Problem**: Scale factor 0.999 applied every 10 steps gives a velocity decay time constant of ~0.5s. The buckling instability takes ~5-6s to develop, so the damping was suppressing it before it could grow.
+
+**Change**: In `run_single()`, changed both linear and angular velocity scale factors from `0.999` to `0.9999`. Updated the comment to reflect ~0.01% per step (was ~0.05%).
+
+**Effect**: New time constant is ~5s (matching the buckling development timescale). High-frequency solver oscillations are still damped, but the slow buckling mode can now develop freely.
+
+**No simulation run**: Physics agent will run after its changes.
+
+### Perturbation increase: 0.005 -> 0.02 rad/s (2026-04-04)
+
+**Problem**: With perturb_mag=0.005 rad/s, 2 of 5 seeds never developed buckling. The random perturbation direction in those seeds did not couple strongly enough with the buckling mode to trigger the instability.
+
+**Change**: In `build_system()`, changed `perturb_mag = 0.005` to `perturb_mag = 0.02`. This is a 4x increase.
+
+**Rationale**: 0.02 rad/s is still physically small compared to the system dynamics (angular velocities during buckling reach several rad/s), but large enough to ensure all 5 seeds reliably trigger the instability regardless of the random perturbation direction.
+
+**No simulation run**: Will be run after all agent changes are complete.
