@@ -1,0 +1,14 @@
+name: chrono
+channels:
+  - projectchrono
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pychrono
+  - numpy
+  - scipy
+  - matplotlib
+  - pyvista
+  - imageio-ffmpeg
+  - ffmpeg
