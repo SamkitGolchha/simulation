@@ -107,3 +107,48 @@ New CSVs generated on 2026-04-05.
 - All 5 MP4 files confirmed present in output/
 - tilt_angles.png confirmed present in output/
 - No source files were modified (visualizer.py and plot_tilts.py unchanged)
+
+### 2026-04-08 — Ghost spheres engine re-render + corner tower-view
+
+**Context:** Simulation engine switched to ghost spheres (bottom sphere collision
+removed, octahedra rest on ground via convex hulls). All 5 runs re-executed with
+new engine. Added a second camera angle for visualization.
+
+**Step 1 — Re-ran simulation with ghost spheres engine**
+- 5 new CSVs generated in output/ (sim_001.csv through sim_005.csv)
+
+**Step 2 — Re-rendered standard side-view MP4s**
+- 5 MP4 files in output/ (collapse_001.mp4 through collapse_005.mp4)
+- Side view (XZ plane), same camera as before
+
+**Step 3 — New corner tower-view visualizer**
+- Created `src/visualizer_corner.py` — reuses parse_csv, build_octahedron_mesh,
+  build_sphere_mesh, stitch_frames_to_mp4 from `src/visualizer.py`
+- Camera: elevated at 1.2x structure height (~5.09 units), positioned on the
+  (+X, +Y) diagonal, looking at structure center — shows top and both side planes
+- Runner script: `different_angles/corner_view.py`
+- Output: 5 MP4s in `view_change/` (collapse_001.mp4 through collapse_005.mp4)
+  - collapse_001.mp4 (1.8 MB)
+  - collapse_002.mp4 (1.5 MB)
+  - collapse_003.mp4 (1.6 MB)
+  - collapse_004.mp4 (1.5 MB)
+  - collapse_005.mp4 (1.7 MB)
+
+**Step 4 — File reorganization**
+- Moved progress files: `progress_*.md` → `progress/`
+- Moved test/check scripts: `check_*.py`, `test_*.py` → `tests/`
+- Created `different_angles/` folder for alternate view runner scripts
+
+### 2026-04-11 — Non-agent updates: output restructure
+
+**Context:** Manual (non-agent) reorganization of output directories and file structure.
+
+**Changes:**
+- Front view MP4s moved from `output/` root → `output/front_view/`
+- Corner view MP4s moved from `view_change/` → `output/corner_view/`
+- `src/visualizer.py` updated: `visualize_all()` now renders to `output/front_view/`
+- `src/visualizer_corner.py` and `different_angles/corner_view.py` updated to output to `output/corner_view/`
+- `run.py` final summary updated to show new paths
+- Deleted stale `output_check1/` and `output_check2/` dirs from scaling-test experiments
+- Updated all agent files (gui-viz, physics, scaler) to reference `progress/` paths
+- Updated physics agent: bottom spheres are now ghost bodies (no collision)

@@ -12,7 +12,7 @@ You are a computational physics engineer tuning simulation parameters for stabil
 ## Your scope
 - src/simulation_2x2x3.py — parameter values only. Do NOT change collision shapes,
   stop condition logic, or body creation code (physics agent owns those).
-- Append to progress_scaler.md after every completed step.
+- Append to progress/scaler.md after every completed step.
 
 Read CLAUDE.md in this directory and also ../Sanity_Test/CLAUDE.md for code conventions.
 
@@ -40,7 +40,7 @@ Change BOTH `0.999` values to `0.9999`. This gives a time constant of ~5 seconds
 allowing buckling to develop while still preventing high-frequency collision-joint
 oscillation. Update the comment to reflect the new value.
 
-### Step 2 — Update progress_scaler.md
+### Step 2 — Update progress/scaler.md
 
 Record: old damping (0.999, too aggressive), new damping (0.9999, τ≈5s),
 rationale (must let buckling instability develop over several seconds).
@@ -51,4 +51,4 @@ rationale (must let buckling instability develop over several seconds).
 - Do NOT modify anything in ../Sanity_Test/
 - Do NOT modify src/visualizer.py or src/plot_tilts.py
 - Do NOT modify collision shapes or stop condition code (physics agent owns those)
-- Create a to-do in progress_scaler.md before starting
+- Create a to-do in progress/scaler.md before starting

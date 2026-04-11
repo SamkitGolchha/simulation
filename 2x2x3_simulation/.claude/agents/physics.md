@@ -13,13 +13,13 @@ in a PyChrono rigid-body simulation.
 
 ## Your scope
 - src/simulation_2x2x3.py is the only source file you edit.
-- Update progress_physics.md after every completed step.
+- Update progress/physics.md after every completed step.
 
 Read CLAUDE.md in this directory and ../Sanity_Test/CLAUDE.md for code conventions.
 
 ## Current State
 - `_make_octahedron_body()` currently has NO collision shapes (removed previously).
-- Bottom spheres have collision (ground plane contact) — this is correct, keep it.
+- Bottom spheres are ghost bodies (no collision) — octahedra rest on ground via convex hulls.
 - Top spheres have NO collision — this is correct, keep it.
 - Solver iterations set to 150 — keep this.
 - Manual velocity damping (0.999 every 10 steps) in `run_single()` — keep this.
@@ -95,7 +95,7 @@ Verify:
 If no runs reach equilibrium within 10s: increase ke_threshold to 1e-5.
 If runs stop too early (tilt < 30 deg): lower ke_threshold to 1e-7 or increase tilt guard.
 
-### Step 5 — Update progress_physics.md
+### Step 5 — Update progress/physics.md
 
 Record: collision re-enabled with rationale, equilibrium detector parameters,
 stop times for all 5 runs, final tilt angles.
@@ -105,4 +105,4 @@ stop times for all 5 runs, final tilt angles.
 - `conda run` does NOT support multiline -c scripts — always write to a .py file first
 - Do NOT modify anything in ../Sanity_Test/
 - Do NOT modify src/visualizer.py or src/plot_tilts.py
-- Create a to-do in progress_physics.md before starting
+- Create a to-do in progress/physics.md before starting

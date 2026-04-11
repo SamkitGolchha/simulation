@@ -75,6 +75,9 @@ def main() -> None:
 
     print("\n" + "=" * 60)
     print("Pipeline finished. Outputs in output/")
+    print("  CSVs:       output/sim_*.csv")
+    print("  Front view: output/front_view/collapse_*.mp4")
+    print("  Tilt plot:  output/tilt_angles.png")
     print("=" * 60)
 
 

@@ -51,22 +51,22 @@ joints than the sanity test — log the exact count in progress.md.
 All bodies are free to move in all directions. Loading is applied via forces, not motors
 or fixed constraints. Ball joints keep the structure connected.
 
-**4 bottom spheres** — placed at the -Z vertex of each iz=0 octahedron:
-- NO `ChLinkMateFix`. Instead, a **collision ground plane** at Z = initial bottom sphere Z
-  prevents penetration below the floor. The contact solver provides upward reaction
-  automatically. Bottom spheres are free to slide in X,Y and lift in Z.
+**4 bottom ghost spheres** — placed at the -Z vertex of each iz=0 octahedron:
+- Ghost bodies: exist for joint connectivity but have **no collision shapes**.
+- Octahedra rest on the ground directly via their own convex-hull collision shapes.
 - Connected to their octahedron via ball joint.
 
 **4 top spheres** — placed at the +Z vertex of each iz=2 octahedron:
-- NO motors. Instead, a **constant downward force** (~5 N, tunable) is applied each
-  timestep via `body.Accumulate_force(chrono.ChVector3d(0, 0, -F_top), False)`.
+- NO motors. Instead, a **constant downward force** (0.5 N per sphere) is applied
+  via persistent `ChForce` objects.
 - As the structure tilts, the vertical force naturally decomposes into axial + lateral
   components, driving cooperative buckling.
 - Connected to their octahedron via ball joint.
 
 **Ground plane implementation** (PyChrono collision):
 - Ground body with a large box collision shape at the floor level
-- Bottom sphere bodies have sphere collision shapes enabled
+- Octahedra have convex-hull collision shapes (rest directly on ground)
+- Bottom spheres are ghost bodies (no collision) — joint-only connectivity
 - ChSystemNSC contact solver handles the reaction forces
 
 **DOF count:**

@@ -258,10 +258,11 @@ def derive_mp4_name(csv_path: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def visualize(csv_path: str, output_filename: Optional[str] = None) -> None:
+def visualize(csv_path: str, output_dir: Optional[str] = None, output_filename: Optional[str] = None) -> None:
     # Full pipeline: parse CSV, render all frames, stitch MP4, clean up frames.
     csv_path_abs = os.path.abspath(csv_path)
-    output_dir = str(Path(csv_path_abs).parent)
+    if output_dir is None:
+        output_dir = str(Path(csv_path_abs).parent)
 
     mp4_name = output_filename if output_filename is not None else "collapse.mp4"
     frames_dir = os.path.join(output_dir, "frames")
@@ -291,7 +292,8 @@ def visualize(csv_path: str, output_filename: Optional[str] = None) -> None:
 
 
 def visualize_all(output_dir: str) -> None:
-    # Find all sim_*.csv files in output_dir and produce one collapse_NNN.mp4 per CSV.
+    # Find all sim_*.csv files in output_dir and produce one collapse_NNN.mp4 per CSV
+    # into the front_view/ subdirectory.
     output_dir_abs = os.path.abspath(output_dir)
     pattern = os.path.join(output_dir_abs, "sim_*.csv")
     csv_files = sorted(glob.glob(pattern))
@@ -300,11 +302,15 @@ def visualize_all(output_dir: str) -> None:
         print(f"No sim_*.csv files found in {output_dir_abs}", file=sys.stderr)
         sys.exit(1)
 
+    front_view_dir = os.path.join(output_dir_abs, "front_view")
+    os.makedirs(front_view_dir, exist_ok=True)
+
     print(f"Found {len(csv_files)} CSV file(s) in {output_dir_abs}.")
+    print(f"Rendering front view MP4s to {front_view_dir}")
     for csv_file in csv_files:
         mp4_name = derive_mp4_name(csv_file)
         print(f"\n--- Processing {os.path.basename(csv_file)} -> {mp4_name} ---")
-        visualize(csv_file, output_filename=mp4_name)
+        visualize(csv_file, output_dir=front_view_dir, output_filename=mp4_name)
 
 
 if __name__ == "__main__":

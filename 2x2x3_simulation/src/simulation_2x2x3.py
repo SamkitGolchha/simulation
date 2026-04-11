@@ -1,5 +1,7 @@
 # PyChrono rigid-body simulation of a 2x2x3 lattice of 12 octahedra connected by ball joints.
-# Force-based BCs: collision ground plane supports bottom spheres, ChForce loads top spheres downward.
+# Ghost Spheres — bottom spheres remain as bodies but their collision is removed.
+# Octahedra rest on the ground directly via their own convex-hull collision shapes.
+# ChForce loads top spheres downward.
 # Runs 5 independent simulations with random perturbations on an interior octahedron, exports CSV.
 
 import csv
@@ -12,21 +14,35 @@ import numpy as np
 import pychrono as chrono
 
 # ---------------------------------------------------------------------------
-# Import geometry helpers from Sanity_Test via importlib to avoid src namespace clash
+# Geometry helpers (inlined from Sanity_Test/src/simulation.py)
 # ---------------------------------------------------------------------------
-import importlib.util as _ilu
 
-_sanity_sim_path = os.path.normpath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                 "..", "..", "Sanity_Test", "src", "simulation.py")
-)
-_spec = _ilu.spec_from_file_location("sanity_simulation", _sanity_sim_path)
-_sanity_mod = _ilu.module_from_spec(_spec)
-_spec.loader.exec_module(_sanity_mod)
+def octahedron_vertices(center: tuple[float, float, float], a: float = 1.0) -> np.ndarray:
+    """Return 6x3 array of vertex coordinates for a regular octahedron centred at center."""
+    cx, cy, cz = center
+    r = a / math.sqrt(2.0)
+    return np.array([
+        [cx + r,  cy,       cz      ],  # 0: +X equatorial
+        [cx - r,  cy,       cz      ],  # 1: -X equatorial
+        [cx,      cy + r,   cz      ],  # 2: +Y equatorial
+        [cx,      cy - r,   cz      ],  # 3: -Y equatorial
+        [cx,      cy,       cz + r  ],  # 4: top vertex (+Z)
+        [cx,      cy,       cz - r  ],  # 5: bottom vertex (-Z)
+    ], dtype=float)
 
-octahedron_vertices = _sanity_mod.octahedron_vertices
-octahedron_faces = _sanity_mod.octahedron_faces
-octahedron_inertia = _sanity_mod.octahedron_inertia
+
+def octahedron_faces() -> list[tuple[int, int, int]]:
+    """Return the 8 triangular face index tuples for a regular octahedron (vertex indices)."""
+    return [
+        (0, 2, 4), (2, 1, 4), (1, 3, 4), (3, 0, 4),  # upper 4 faces
+        (0, 3, 5), (3, 1, 5), (1, 2, 5), (2, 0, 5),  # lower 4 faces
+    ]
+
+
+def octahedron_inertia(mass: float, a: float = 1.0) -> tuple[float, float, float]:
+    """Return (Ixx, Iyy, Izz) for a uniform solid regular octahedron; all equal by symmetry."""
+    I = (1.0 / 10.0) * mass * a * a
+    return (I, I, I)
 
 
 # ---------------------------------------------------------------------------
@@ -297,11 +313,7 @@ def build_system(
         bot_spheres.append(bot_sph)
         bot_names.append(f"bot_sphere_{cix}{ciy}")
 
-        # Enable collision on bottom sphere (supported by ground plane contact)
-        bot_sph.EnableCollision(True)
-        bot_col_mat = chrono.ChContactMaterialNSC()
-        bot_col_shape = chrono.ChCollisionShapeSphere(bot_col_mat, 0.05)
-        bot_sph.AddCollisionShape(bot_col_shape)
+        # Ghost sphere: no collision — octahedra rest on ground via their own hulls
 
         # Ball joint: bottom sphere <-> iz=0 octahedron
         _add_ball_joint(system, bot_sph, oct_bodies[flat_bot], bot_vertex)
