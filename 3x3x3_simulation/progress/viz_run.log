@@ -1,0 +1,208 @@
+Matplotlib is building the font cache; this may take a moment.
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+Context leak detected, CoreAnalytics returned false
+2026-04-12 17:36:18.906 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x640ab4f00 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x640aaeca0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x669d8fa10 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676c1f070 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676c3f020 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.909 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676c66d80 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676c2e560 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676cdc0b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.910 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676cd45e0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.911 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676c16a50 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.912 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.912 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.912 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.912 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x676c1f070 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.912 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6640728b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:18.913 python[60701:1710806] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x672c65ce0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.029 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.031 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x677c64930 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.031 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6adc1e7b0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.031 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.031 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x677cfcea0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x677cd78a0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x677cc6660 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x677c45400 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.032 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x68489a470 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.033 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6848665f0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6a2b2f450 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x677cfcea0 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x679245500 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.034 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x623937a70 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+2026-04-12 17:36:19.036 python[60701:1711236] GLDRendererMetal command buffer completion error: Error Domain=MTLCommandBufferErrorDomain Code=8 "Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory)" UserInfo={NSLocalizedDescription=Insufficient Memory (00000008:kIOGPUCommandBufferCallbackErrorOutOfMemory), NSUnderlyingError=0x6239fbd80 {Error Domain=IOGPUCommandQueueErrorDomain Code=8 "(null)"}}
+
+============================================================
+STEP 2: Rendering MP4 videos ...
+============================================================
+Found 5 CSV file(s) in /Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/output.
+Rendering front view MP4s to /Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/output/front_view
+
+--- Processing sim_001.csv -> collapse_001.mp4 ---
+Parsing /Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/output/sim_001.csv ...
+  Found 800 timesteps, 45 bodies (27 octahedra, 18 spheres).
+  Rendered frame 20/800 (t=0.2376s)
+  Rendered frame 40/800 (t=0.4875s)
+  Rendered frame 60/800 (t=0.7376s)
+  Rendered frame 80/800 (t=0.9876s)
+  Rendered frame 100/800 (t=1.2375s)
+  Rendered frame 120/800 (t=1.4875s)
+  Rendered frame 140/800 (t=1.7375s)
+  Rendered frame 160/800 (t=1.9875s)
+  Rendered frame 180/800 (t=2.2376s)
+  Rendered frame 200/800 (t=2.4876s)
+  Rendered frame 220/800 (t=2.7376s)
+  Rendered frame 240/800 (t=2.9876s)
+  Rendered frame 260/800 (t=3.2376s)
+  Rendered frame 280/800 (t=3.4876s)
+  Rendered frame 300/800 (t=3.7376s)
+  Rendered frame 320/800 (t=3.9876s)
+  Rendered frame 340/800 (t=4.2375s)
+  Rendered frame 360/800 (t=4.4875s)
+  Rendered frame 380/800 (t=4.7375s)
+  Rendered frame 400/800 (t=4.9875s)
+  Rendered frame 420/800 (t=5.2375s)
+  Rendered frame 440/800 (t=5.4875s)
+  Rendered frame 460/800 (t=5.7375s)
+  Rendered frame 480/800 (t=5.9875s)
+  Rendered frame 500/800 (t=6.2375s)
+  Rendered frame 520/800 (t=6.4875s)
+  Rendered frame 540/800 (t=6.7375s)
+  Rendered frame 560/800 (t=6.9875s)
+  Rendered frame 580/800 (t=7.2375s)
+  Rendered frame 600/800 (t=7.4875s)
+  Rendered frame 620/800 (t=7.7375s)
+  Rendered frame 640/800 (t=7.9875s)
+  Rendered frame 660/800 (t=8.2376s)
+  Rendered frame 680/800 (t=8.4876s)
+  Rendered frame 700/800 (t=8.7376s)
+  Rendered frame 720/800 (t=8.9876s)
+  Rendered frame 740/800 (t=9.2376s)
+  Rendered frame 760/800 (t=9.4876s)
+  Rendered frame 780/800 (t=9.7376s)
+  Rendered frame 800/800 (t=9.9876s)
+Stitching frames into MP4 ...
+  Saved /Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/output/front_view/collapse_001.mp4
+Cleaning up frames ...
+Done.
+
+--- Processing sim_002.csv -> collapse_002.mp4 ---
+Parsing /Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/output/sim_002.csv ...
+  Found 800 timesteps, 45 bodies (27 octahedra, 18 spheres).
+  Rendered frame 20/800 (t=0.2376s)
+  Rendered frame 40/800 (t=0.4875s)
+  Rendered frame 60/800 (t=0.7376s)
+  Rendered frame 80/800 (t=0.9876s)
+  Rendered frame 100/800 (t=1.2375s)
+  Rendered frame 120/800 (t=1.4875s)
+  Rendered frame 140/800 (t=1.7375s)
+  Rendered frame 160/800 (t=1.9875s)
+  Rendered frame 180/800 (t=2.2376s)
+  Rendered frame 200/800 (t=2.4876s)
+  Rendered frame 220/800 (t=2.7376s)
+  Rendered frame 240/800 (t=2.9876s)
+  Rendered frame 260/800 (t=3.2376s)
+  Rendered frame 280/800 (t=3.4876s)
+  Rendered frame 300/800 (t=3.7376s)
+  Rendered frame 320/800 (t=3.9876s)
+  Rendered frame 340/800 (t=4.2375s)
+  Rendered frame 360/800 (t=4.4875s)
+  Rendered frame 380/800 (t=4.7375s)
+  Rendered frame 400/800 (t=4.9875s)
+Traceback (most recent call last):
+  File "/Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/run.py", line 85, in <module>
+    main()
+  File "/Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/run.py", line 71, in main
+    run_visualization()
+  File "/Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/run.py", line 36, in run_visualization
+    visualize_all("output")
+  File "/Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/src/visualizer.py", line 328, in visualize_all
+    visualize(csv_file, output_dir=front_view_dir, output_filename=mp4_name)
+  File "/Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/src/visualizer.py", line 296, in visualize
+    render_frame(idx, sim_data, t, frames_dir, body_kinds)
+  File "/Users/samkit/Desktop/Research/Simulation/3x3x3_simulation/src/visualizer.py", line 226, in render_frame
+    pl.screenshot(frame_path)
+  File "/Users/samkit/anaconda3/envs/chrono/lib/python3.12/site-packages/pyvista/_deprecate_positional_args.py", line 243, in inner_f
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/samkit/anaconda3/envs/chrono/lib/python3.12/site-packages/pyvista/plotting/plotter.py", line 6446, in screenshot
+    return self._save_image(self.image, filename, return_img)
+                            ^^^^^^^^^^
+  File "/Users/samkit/anaconda3/envs/chrono/lib/python3.12/site-packages/pyvista/plotting/plotter.py", line 2103, in image
+    self._check_has_ren_win()
+  File "/Users/samkit/anaconda3/envs/chrono/lib/python3.12/site-packages/pyvista/plotting/plotter.py", line 2073, in _check_has_ren_win
+    raise RenderWindowUnavailable(msg)
+pyvista.plotting.errors.RenderWindowUnavailable: Render window is not current.
