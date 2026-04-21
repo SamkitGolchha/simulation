@@ -97,11 +97,54 @@ def make_colormap_colors(n: int) -> List[tuple]:
     return [cmap(i / max(n - 1, 1)) for i in range(n)]
 
 
+def plot_single_run(csv_path: str, out_path: str | None = None) -> str:
+    # Plot tilt angles for the (0,0) column from one CSV; save alongside the CSV
+    # as <stem>_tilt.png with a dashed 10° gate line and peak-tilt annotation.
+    csv_path_abs = os.path.abspath(csv_path)
+    run_data = parse_run_csv(csv_path_abs)
+
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(12, 10), sharex=True)
+    for subplot_idx, body_id in enumerate(_COLUMN_00_BODY_IDS):
+        ax = axes[subplot_idx]
+        ax.set_title(_OCT_TITLES[body_id], fontsize=11)
+        ax.set_ylabel("Tilt Angle (\u00b0)", fontsize=10)
+        ax.grid(True, linestyle="--", alpha=0.5)
+        if body_id in run_data:
+            times, angles = run_data[body_id]
+            ax.plot(times, angles, color="tab:blue", linewidth=1.5)
+            peak = max(angles) if angles else 0.0
+            ax.axhline(10.0, color="tab:red", linestyle=":", linewidth=1.0, alpha=0.6)
+            ax.text(
+                0.99, 0.95, f"peak {peak:.2f}\u00b0",
+                transform=ax.transAxes, ha="right", va="top", fontsize=9,
+            )
+    axes[-1].set_xlabel("Time (s)", fontsize=10)
+    fig.suptitle(Path(csv_path_abs).stem, fontsize=12)
+    fig.tight_layout()
+
+    if out_path is None:
+        out_path = os.path.splitext(csv_path_abs)[0] + "_tilt.png"
+    fig.savefig(out_path, dpi=200)
+    plt.close(fig)
+    print(f"Saved {out_path}")
+    return out_path
+
+
 def plot_tilt_angles(output_dir: str) -> None:
-    # Load all runs, build the 3-subplot tilt-angle figure for column (0,0), and save to PNG.
+    # Load all runs, write one per-run tilt PNG per CSV, then the aggregate overlay.
     output_dir_abs = os.path.abspath(output_dir)
     print(f"Loading CSVs from {output_dir_abs} ...")
-    runs = load_all_runs(output_dir_abs)
+    csv_files = sorted(Path(output_dir_abs).glob("sim_*.csv"))
+    if not csv_files:
+        raise FileNotFoundError(f"No sim_*.csv files found in {output_dir_abs!r}")
+
+    runs: List[Tuple[str, RunData]] = []
+    for path in csv_files:
+        label = f"Run {len(runs) + 1}"
+        print(f"  Parsing {path.name} as {label} ...")
+        run_data = parse_run_csv(str(path))
+        runs.append((label, run_data))
+        plot_single_run(str(path))
 
     colors = make_colormap_colors(len(runs))
 
