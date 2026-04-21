@@ -9,10 +9,22 @@ import csv
 import math
 import os
 import sys
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import pychrono as chrono
+
+# ---------------------------------------------------------------------------
+# Joint formulation switch
+# ---------------------------------------------------------------------------
+# "spherical": rigid ChLinkLockSpherical — setup333 baseline on main; at 3x3x3
+#   the oct-only subsystem is rank-deficient on rigid modes (F_oct = 0), which
+#   is the point of preserving this path as empirical evidence.
+# "bushing":   compliant ChLoadBodyBodyBushingSpherical — ported from the
+#   committed 2x2x3 refactor (2026-04-21). Zero rows in the constraint
+#   Jacobian, so F_bushing = 6·B identically at any grid size. Requires
+#   ChSolverADMM (PSOR rejects the K/C matrices at runtime).
+JOINT_MODE: Literal["spherical", "bushing"] = "bushing"
 
 # ---------------------------------------------------------------------------
 # Geometry helpers (inlined from Sanity_Test/src/simulation.py)
@@ -55,6 +67,28 @@ NX: int = 3
 NY: int = 3
 NZ: int = 3
 N_OCT: int = NX * NY * NZ  # 27
+
+
+# ---------------------------------------------------------------------------
+# Bushing stiffness sweep (JOINT_MODE = "bushing" only)
+# ---------------------------------------------------------------------------
+# Each shared-vertex coupling is a ChLoadBodyBodyBushingSpherical (force-based
+# 3-axis spring, no rows in the constraint Jacobian). The sweep runs each
+# (label, K, C) tuple as an independent batch of 5 seeds. Damping is tuned so
+# ζ = C / (2·sqrt(m·K)) ≈ 0.5 (m = 1 kg per octahedron).
+STIFFNESS_VARIANTS: list[tuple[str, float, float]] = [
+    ("bushing_K1e4", 1.0e4, 1.0e2),
+]
+
+# change_2 variants: same bushing formulation, but with the top load and initial
+# perturbation cranked up so the structure actually buckles. Used when the
+# baseline run leaves tilts under the 10° gate and stabilises (the 2×2×3
+# contingency trigger rule — see 3x3x3_plan.md §4.2). Output lives under
+# output/change_2/<label>/.
+CHANGE2_VARIANTS: list[tuple[str, float, float, float, float]] = [
+    # (label, K, C, F_top[N], perturb[rad/s])
+    ("K1e4_F3_P0_1", 1.0e4, 1.0e2, 3.0, 0.1),
+]
 
 
 # ---------------------------------------------------------------------------
@@ -109,17 +143,50 @@ def _make_sphere_body(
 
 
 def _add_ball_joint(
-    system: chrono.ChSystemNSC,
+    container: Any,
     bodyA: chrono.ChBody,
     bodyB: chrono.ChBody,
     joint_pos: tuple[float, float, float],
-) -> chrono.ChLinkLockSpherical:
-    """Create and add a spherical (ball) joint between bodyA and bodyB at joint_pos."""
-    joint = chrono.ChLinkLockSpherical()
-    frame = chrono.ChFramed(chrono.ChVector3d(joint_pos[0], joint_pos[1], joint_pos[2]))
-    joint.Initialize(bodyA, bodyB, frame)
-    system.AddLink(joint)
-    return joint
+    bushing_k: float | None = None,
+    bushing_c: float | None = None,
+) -> Any:
+    """Couple bodyA and bodyB at joint_pos — formulation selected by JOINT_MODE.
+
+    JOINT_MODE == "spherical":
+        `container` must be the ChSystemNSC. Creates a rigid ChLinkLockSpherical
+        (three kinematic translation constraints in Φ_q) and adds it via
+        system.AddLink(). This reproduces setup333's main-branch behavior
+        byte-for-byte — flipping JOINT_MODE back to "spherical" must be the
+        only edit required to recover that baseline.
+
+    JOINT_MODE == "bushing":
+        `container` must be the ChLoadContainer, and bushing_k / bushing_c
+        must be supplied. Builds a ChLoadBodyBodyBushingSpherical with three
+        isotropic translational springs (stiffness bushing_k, damping
+        bushing_c) at the shared vertex, rotation free, zero rows in Φ_q.
+    """
+    if JOINT_MODE == "spherical":
+        joint = chrono.ChLinkLockSpherical()
+        frame = chrono.ChFramed(chrono.ChVector3d(joint_pos[0], joint_pos[1], joint_pos[2]))
+        joint.Initialize(bodyA, bodyB, frame)
+        container.AddLink(joint)
+        return joint
+
+    if JOINT_MODE == "bushing":
+        if bushing_k is None or bushing_c is None:
+            raise ValueError(
+                "_add_ball_joint: bushing mode requires bushing_k and bushing_c"
+            )
+        frame = chrono.ChFramed(chrono.ChVector3d(joint_pos[0], joint_pos[1], joint_pos[2]))
+        stiffness = chrono.ChVector3d(bushing_k, bushing_k, bushing_k)
+        damping = chrono.ChVector3d(bushing_c, bushing_c, bushing_c)
+        bushing = chrono.ChLoadBodyBodyBushingSpherical(
+            bodyA, bodyB, frame, stiffness, damping
+        )
+        container.Add(bushing)
+        return bushing
+
+    raise ValueError(f"Unknown JOINT_MODE: {JOINT_MODE!r}")
 
 
 # ---------------------------------------------------------------------------
@@ -243,8 +310,26 @@ def _find_shared_vertices(
 
 def build_system(
     perturbation_seed: int,
-) -> tuple[chrono.ChSystemNSC, list[chrono.ChBody], list[str], int, list[chrono.ChBody]]:
-    """Build the 3x3x3 lattice system with ball joints, collision ground, and top forces."""
+    bushing_k: float | None = None,
+    bushing_c: float | None = None,
+    top_force_n: float = 0.5,
+    perturb_mag: float = 0.02,
+) -> tuple[
+    chrono.ChSystemNSC,
+    list[chrono.ChBody],
+    list[str],
+    int,
+    list[chrono.ChBody],
+    Any,
+]:
+    """Build the 3x3x3 lattice system with ball joints, collision ground, and top forces.
+
+    Returns (system, all_bodies, all_names, joint_count, top_spheres, load_container).
+    `load_container` is None in JOINT_MODE == "spherical" (the rigid baseline did
+    not need one); in "bushing" mode it is the ChLoadContainer that owns all
+    bushings and MUST be kept referenced by the caller for the duration of the
+    sim run so Python GC does not reclaim it.
+    """
     a = EDGE_LENGTH
     r = a / math.sqrt(2.0)
 
@@ -252,7 +337,29 @@ def build_system(
     system = chrono.ChSystemNSC()
     system.SetGravitationalAcceleration(chrono.ChVector3d(0.0, 0.0, -9.81))
     system.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
-    system.GetSolver().AsIterative().SetMaxIterations(150)
+
+    load_container: Any = None
+    if JOINT_MODE == "spherical":
+        # Keep the setup333 baseline path byte-for-byte.
+        system.GetSolver().AsIterative().SetMaxIterations(150)
+    elif JOINT_MODE == "bushing":
+        # ADMM instead of default PSOR: PSOR cannot handle the stiffness/damping
+        # matrices contributed by ChLoadBodyBodyBushingSpherical, ADMM can.
+        if bushing_k is None or bushing_c is None:
+            raise ValueError(
+                "build_system: JOINT_MODE='bushing' requires bushing_k and bushing_c"
+            )
+        solver = chrono.ChSolverADMM()
+        solver.SetMaxIterations(150)
+        system.SetSolver(solver)
+
+        # Load container owns all bushing couplings; kept referenced by
+        # build_system's caller so GC doesn't reclaim the Python handle during
+        # the sim run.
+        load_container = chrono.ChLoadContainer()
+        system.Add(load_container)
+    else:
+        raise ValueError(f"Unknown JOINT_MODE: {JOINT_MODE!r}")
 
     # Ground body with collision floor at Z = -r (initial bottom sphere Z)
     ground = chrono.ChBody()
@@ -291,8 +398,19 @@ def build_system(
     shared_pairs = _find_shared_vertices(centers, grid_indices, a)
     joint_count = 0
 
+    # Container passed to _add_ball_joint depends on JOINT_MODE: the system for
+    # rigid spherical joints (AddLink), the load_container for bushings (Add).
+    coupling_container = load_container if JOINT_MODE == "bushing" else system
+
     for (idxA, idxB, vpos) in shared_pairs:
-        _add_ball_joint(system, oct_bodies[idxA], oct_bodies[idxB], vpos)
+        _add_ball_joint(
+            coupling_container,
+            oct_bodies[idxA],
+            oct_bodies[idxB],
+            vpos,
+            bushing_k,
+            bushing_c,
+        )
         joint_count += 1
 
     print(f"  Inter-octahedron ball joints: {joint_count}")
@@ -321,7 +439,14 @@ def build_system(
         # Ghost sphere: no collision — octahedra rest on ground via their own hulls
 
         # Ball joint: bottom sphere <-> iz=0 octahedron
-        _add_ball_joint(system, bot_sph, oct_bodies[flat_bot], bot_vertex)
+        _add_ball_joint(
+            coupling_container,
+            bot_sph,
+            oct_bodies[flat_bot],
+            bot_vertex,
+            bushing_k,
+            bushing_c,
+        )
         joint_count += 1
 
         # --- Top sphere: +Z vertex of iz=NZ-1 octahedron in this column ---
@@ -334,7 +459,14 @@ def build_system(
         top_names.append(f"top_sphere_{cix}{ciy}")
 
         # Ball joint: iz=NZ-1 octahedron <-> top sphere
-        _add_ball_joint(system, oct_bodies[flat_top], top_sph, top_vertex)
+        _add_ball_joint(
+            coupling_container,
+            oct_bodies[flat_top],
+            top_sph,
+            top_vertex,
+            bushing_k,
+            bushing_c,
+        )
         joint_count += 1
 
         # Constant downward force on top sphere (ChForce must be added before configuring)
@@ -343,7 +475,7 @@ def build_system(
         top_force.SetMode(chrono.ChForce.FORCE)
         top_force.SetAlign(chrono.ChForce.WORLD_DIR)
         top_force.SetDir(chrono.ChVector3d(0.0, 0.0, -1.0))
-        top_force.SetMforce(0.5)  # 0.5 N downward, tunable
+        top_force.SetMforce(top_force_n)
 
     print(f"  Total ball joints (inter-oct + sphere-oct): {joint_count}")
 
@@ -362,13 +494,12 @@ def build_system(
     rng = np.random.default_rng(perturbation_seed)
     perturb_dir = rng.standard_normal(3)
     perturb_dir /= np.linalg.norm(perturb_dir)
-    perturb_mag = 0.02  # rad/s
-    omega = perturb_mag * perturb_dir
+    omega = perturb_mag * perturb_dir  # rad/s; magnitude from parameter
     oct_bodies[perturb_flat].SetAngVelParent(
         chrono.ChVector3d(float(omega[0]), float(omega[1]), float(omega[2]))
     )
 
-    return system, all_bodies, all_names, joint_count, top_spheres
+    return system, all_bodies, all_names, joint_count, top_spheres, load_container
 
 
 # ---------------------------------------------------------------------------
@@ -378,12 +509,27 @@ def build_system(
 def run_single(
     seed: int,
     csv_path: str,
+    bushing_k: float | None = None,
+    bushing_c: float | None = None,
+    top_force_n: float = 0.5,
+    perturb_mag: float = 0.02,
     dt: float = 5e-5,
     duration: float = 10.0,
     export_interval: int = 250,
 ) -> tuple[str, int]:
-    """Build a fresh system, step it for duration seconds, write body states to csv_path."""
-    system, bodies, body_names, joint_count, _top_spheres = build_system(seed)
+    """Build a fresh system, step it for duration seconds, write body states to csv_path.
+
+    In JOINT_MODE == "bushing", bushing_k / bushing_c must be supplied (the
+    driver functions pass them from the active STIFFNESS_VARIANTS /
+    CHANGE2_VARIANTS tuple). In "spherical" mode they are ignored.
+    """
+    system, bodies, body_names, joint_count, _top_spheres, _load_container = build_system(
+        seed,
+        bushing_k=bushing_k,
+        bushing_c=bushing_c,
+        top_force_n=top_force_n,
+        perturb_mag=perturb_mag,
+    )
     oct_bodies = bodies[:N_OCT]  # first 27 bodies are octahedra
 
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
