@@ -539,10 +539,19 @@ def run_single(
     stopped_early = False
 
     # Equilibrium detector: sustained low KE for N consecutive export checks.
-    # With collision + damping, the system reaches a steady-state KE of ~0.001 J.
-    # We detect equilibrium when KE stays below ke_threshold for ke_consec_required
-    # consecutive export steps (each step = export_interval * dt seconds apart).
-    ke_threshold = 0.01  # Joules; relaxed — numerical jiggling keeps KE above 1e-6
+    # Values are mode-dependent and ported verbatim from the respective 2x2x3
+    # baselines — see hard constraint in joints333 brief: do not tune KE
+    # thresholds away from the ported 2x2x3 values.
+    if JOINT_MODE == "bushing":
+        # Bushing springs keep the assembly lightly oscillating at a KE floor
+        # ~1e-2; threshold is raised to 0.1 with headroom above it. Tilt gate
+        # dropped to 10° (matches the regime where bushing collapses stabilise).
+        ke_threshold = 0.1
+        min_tilt_deg = 10.0
+    else:
+        # Rigid spherical baseline — unchanged from setup333's main-branch run.
+        ke_threshold = 0.01
+        min_tilt_deg = 30.0
     ke_consec_required = 40  # 40 * 250 * 5e-5 = 0.50 s of sustained low KE
     ke_consec_count = 0
 
@@ -585,7 +594,7 @@ def run_single(
                     z_z = 1.0 - 2.0 * (q.e1**2 + q.e2**2)
                     tilt = math.acos(max(-1.0, min(1.0, z_z)))
                     max_tilt = max(max_tilt, tilt)
-                if max_tilt > math.radians(30.0):
+                if max_tilt > math.radians(min_tilt_deg):
                     total_ke = _compute_total_ke(bodies)
                     if total_ke < ke_threshold:
                         ke_consec_count += 1
@@ -617,21 +626,112 @@ def run_single(
     return csv_path, joint_count
 
 
-def run_all(n_runs: int = 5) -> list[str]:
-    """Run n_runs simulations with seeds 1..n_runs and return list of CSV output paths."""
-    output_dir = os.path.join(
+def _default_output_root() -> str:
+    return os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         "output",
     )
+
+
+def run_all(
+    output_dir: str | None = None,
+    bushing_k: float | None = None,
+    bushing_c: float | None = None,
+    n_runs: int = 5,
+    top_force_n: float = 0.5,
+    perturb_mag: float = 0.02,
+) -> list[str]:
+    """Run n_runs simulations (seeds 1..n_runs) into output_dir.
+
+    In JOINT_MODE == "bushing", bushing_k / bushing_c must be supplied (the
+    sweep drivers pass them from the active STIFFNESS_VARIANTS /
+    CHANGE2_VARIANTS tuple). In "spherical" mode these are ignored and the
+    rigid-baseline behavior is preserved.
+    """
+    if output_dir is None:
+        output_dir = _default_output_root()
+    os.makedirs(output_dir, exist_ok=True)
     paths: list[str] = []
     for i in range(1, n_runs + 1):
         csv_path = os.path.join(output_dir, f"sim_{i:03d}.csv")
-        print(f"Running simulation {i}/{n_runs} (seed={i}) -> {csv_path}")
-        result_path, joint_count = run_single(seed=i, csv_path=csv_path)
+        if JOINT_MODE == "bushing":
+            print(
+                f"Running simulation {i}/{n_runs} (seed={i}, K={bushing_k:.3g},"
+                f" C={bushing_c:.3g}, F_top={top_force_n} N,"
+                f" perturb={perturb_mag} rad/s) -> {csv_path}"
+            )
+        else:
+            print(f"Running simulation {i}/{n_runs} (seed={i}) -> {csv_path}")
+        result_path, _joint_count = run_single(
+            seed=i,
+            csv_path=csv_path,
+            bushing_k=bushing_k,
+            bushing_c=bushing_c,
+            top_force_n=top_force_n,
+            perturb_mag=perturb_mag,
+        )
         paths.append(result_path)
         row_count = sum(1 for _ in open(csv_path)) - 1
         print(f"  Done. Rows written: {row_count}")
     return paths
+
+
+def run_sweep(
+    variants: list[tuple[str, float, float]] | None = None,
+    output_root: str | None = None,
+    n_runs: int = 5,
+) -> list[tuple[str, str]]:
+    """Run the stiffness sweep: for each (label, K, C), run n_runs sims into
+    output_root/<label>/. Returns a list of (label, output_dir) for downstream
+    viz / plotting.
+    """
+    if variants is None:
+        variants = STIFFNESS_VARIANTS
+    if output_root is None:
+        output_root = _default_output_root()
+
+    results: list[tuple[str, str]] = []
+    for label, k, c in variants:
+        variant_dir = os.path.join(output_root, label)
+        print(f"\n=== Variant {label}: K={k:.3g} N/m, C={c:.3g} N·s/m ===")
+        run_all(output_dir=variant_dir, bushing_k=k, bushing_c=c, n_runs=n_runs)
+        results.append((label, variant_dir))
+    return results
+
+
+def run_change2_sweep(
+    variants: list[tuple[str, float, float, float, float]] | None = None,
+    output_root: str | None = None,
+    n_runs: int = 5,
+) -> list[tuple[str, str]]:
+    """Run the change_2 sweep: 5-tuple variants (label, K, C, F_top, perturb)
+    into output_root/<label>/. Output root defaults to
+    <project>/output/change_2. Used when the baseline STIFFNESS_VARIANTS run
+    leaves tilts under the 10° gate and stabilises — the contingency trigger
+    rule ported from 2×2×3 (see 3x3x3_plan.md §4.2).
+    """
+    if variants is None:
+        variants = CHANGE2_VARIANTS
+    if output_root is None:
+        output_root = os.path.join(_default_output_root(), "change_2")
+
+    results: list[tuple[str, str]] = []
+    for label, k, c, f_top, p_mag in variants:
+        variant_dir = os.path.join(output_root, label)
+        print(
+            f"\n=== change_2 variant {label}: K={k:.3g} N/m, C={c:.3g} N·s/m,"
+            f" F_top={f_top} N, perturb={p_mag} rad/s ==="
+        )
+        run_all(
+            output_dir=variant_dir,
+            bushing_k=k,
+            bushing_c=c,
+            n_runs=n_runs,
+            top_force_n=f_top,
+            perturb_mag=p_mag,
+        )
+        results.append((label, variant_dir))
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -639,7 +739,13 @@ def run_all(n_runs: int = 5) -> list[str]:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    paths = run_all(n_runs=5)
-    print("\nOutput CSV files:")
-    for p in paths:
-        print(f"  {p}")
+    if JOINT_MODE == "bushing":
+        results = run_sweep()
+        print("\nStiffness sweep complete. Variant output directories:")
+        for label, out_dir in results:
+            print(f"  {label} -> {out_dir}")
+    else:
+        paths = run_all()
+        print("\nOutput CSV files:")
+        for p in paths:
+            print(f"  {p}")
