@@ -3,12 +3,16 @@ import os, sys, math
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import pychrono as chrono
-from src.simulation_3x3x3 import build_system, _compute_total_ke
+from src.simulation_3x3x3 import build_system, _compute_total_ke, STIFFNESS_VARIANTS
 
 dt = 5e-5
 export_interval = 250
 
-system, bodies, body_names, joint_count, _top_spheres = build_system(1)
+# Pass bushing params unconditionally; spherical mode ignores them.
+_k, _c = STIFFNESS_VARIANTS[0][1], STIFFNESS_VARIANTS[0][2]
+system, bodies, body_names, joint_count, _top_spheres, _load_container = build_system(
+    1, bushing_k=_k, bushing_c=_c
+)
 
 ke_consec = 0
 ke_thresh = 0.002

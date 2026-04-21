@@ -8,7 +8,7 @@ import pychrono as chrono
 
 # Import the simulation module to access build_system and _check_equilibrium
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from src.simulation_3x3x3 import build_system, _check_equilibrium, EDGE_LENGTH
+from src.simulation_3x3x3 import build_system, _check_equilibrium, EDGE_LENGTH, STIFFNESS_VARIANTS
 
 # Run a single quick simulation (seed=1) and print KE at each export step
 a = EDGE_LENGTH
@@ -16,7 +16,11 @@ dt = 5e-5
 duration = 10.0
 export_interval = 250
 
-system, bodies, body_names, joint_count, _top_spheres = build_system(1)
+# Pass bushing params unconditionally; spherical mode ignores them.
+_k, _c = STIFFNESS_VARIANTS[0][1], STIFFNESS_VARIANTS[0][2]
+system, bodies, body_names, joint_count, _top_spheres, _load_container = build_system(
+    1, bushing_k=_k, bushing_c=_c
+)
 
 n_steps = int(duration / dt)
 print(f"Running KE analysis (seed=1), dt={dt}, {n_steps} steps...")
