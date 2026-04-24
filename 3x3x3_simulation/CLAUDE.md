@@ -1,5 +1,23 @@
 # 3×3×3 Octahedral Array Simulation
 
+## Hard Rules (non-negotiable)
+
+1. **Clear output before every run.** Any time a code change is made and a
+   simulation is re-run, wipe the target output directory first
+   (e.g. `rm -rf output/bushing_K1e4/*`). No mixing old and new artifacts.
+2. **Always maintain an agent progress report file** at
+   `progress/<agent>.md` (e.g. `progress/setup333.md`, `progress/joints333.md`).
+   This file is the human-readable record: decisions, tilt tables, verdicts,
+   wall-clock. **No raw logs, no stdout dumps, no command transcripts** —
+   those belong in `logs/` and are gitignored.
+3. **Every sweep runs all 5 seeds in parallel and produces the default
+   review set.** A "run" is not complete until all three exist in the
+   output dir: (a) 5 CSVs (`sim_001..sim_005.csv`), (b) the aggregate
+   tilt-angle plot (`tilt_angles.png`), and (c) 5 front_view MP4s.
+   **Corner view is not part of the default review set** — render it only
+   when the user explicitly asks. Parallel launch uses `OMP_NUM_THREADS=1`
+   per process.
+
 ## What This Project Is
 Scales the validated 2×2×3 simulation to a 3×3×3 grid of 27 octahedra. Two
 joint formulations coexist in this subproject behind a module-level
@@ -119,9 +137,13 @@ not motors or fixed constraints. Ball joints keep the structure connected.
     is now a stiff spring on the RHS of `M·v̇ = f`.
 
 ### Simulation Parameters
-**Baseline (both modes)**: dt 5e-5, duration 10.0 s, export every 250 steps,
-5 runs with random perturbations on an interior octahedron at (0,0,1)
-(flat index 9), F_top 0.5 N per column, damping factor 0.9999 every 10 steps,
+**Mode-dependent (matches the committed 2×2×3 parameters for each mode)**:
+- `JOINT_MODE = "spherical"`: dt 5e-5, export every 250 steps (setup333 rigid baseline).
+- `JOINT_MODE = "bushing"`: dt 1e-4, export every 125 steps (ported verbatim from committed 2×2×3 bushing refactor).
+
+Common across both: duration 10.0 s, 5 runs with random perturbations on an
+interior octahedron at (0,0,1) (flat index 9), F_top 0.5 N per column,
+damping factor 0.9999 every 10 steps,
 KE equilibrium threshold 0.01 J with 40 consecutive checks required.
 
 **Solver / iterations**:

@@ -350,7 +350,7 @@ def build_system(
                 "build_system: JOINT_MODE='bushing' requires bushing_k and bushing_c"
             )
         solver = chrono.ChSolverADMM()
-        solver.SetMaxIterations(150)
+        solver.SetMaxIterations(30)
         system.SetSolver(solver)
 
         # Load container owns all bushing couplings; kept referenced by
@@ -485,6 +485,7 @@ def build_system(
     # Body IDs: 0-26 octahedra, 27-35 bottom spheres, 36-44 top spheres
     all_bodies = oct_bodies + bot_spheres + top_spheres
     all_names = oct_names + bot_names + top_names
+    print(f"  Total bodies: {len(all_bodies)}")
 
     # -------------------------------------------------------------------
     # Perturbation: random angular velocity on an interior octahedron (iz=1)
@@ -513,16 +514,32 @@ def run_single(
     bushing_c: float | None = None,
     top_force_n: float = 0.5,
     perturb_mag: float = 0.02,
-    dt: float = 5e-5,
+    dt: float | None = None,
     duration: float = 10.0,
-    export_interval: int = 250,
+    export_interval: int | None = None,
 ) -> tuple[str, int]:
     """Build a fresh system, step it for duration seconds, write body states to csv_path.
 
     In JOINT_MODE == "bushing", bushing_k / bushing_c must be supplied (the
     driver functions pass them from the active STIFFNESS_VARIANTS /
     CHANGE2_VARIANTS tuple). In "spherical" mode they are ignored.
+
+    dt / export_interval default to the mode-appropriate values ported verbatim
+    from the 2x2x3 baselines: bushing uses dt=1e-4, export_interval=125 (matches
+    committed 2x2x3 bushing refactor); spherical uses dt=5e-5,
+    export_interval=250 (matches setup333 rigid baseline).
     """
+    if JOINT_MODE == "bushing":
+        if dt is None:
+            dt = 1e-4
+        if export_interval is None:
+            export_interval = 125
+    else:
+        if dt is None:
+            dt = 5e-5
+        if export_interval is None:
+            export_interval = 250
+
     system, bodies, body_names, joint_count, _top_spheres, _load_container = build_system(
         seed,
         bushing_k=bushing_k,
@@ -552,7 +569,7 @@ def run_single(
         # Rigid spherical baseline — unchanged from setup333's main-branch run.
         ke_threshold = 0.01
         min_tilt_deg = 30.0
-    ke_consec_required = 40  # 40 * 250 * 5e-5 = 0.50 s of sustained low KE
+    ke_consec_required = 40  # 40 * export_interval * dt = 0.50 s of sustained low KE
     ke_consec_count = 0
 
     for step_idx in range(n_steps):
