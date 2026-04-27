@@ -1,8 +1,22 @@
-# Output data (CSVs, videos, plots, frames)
+# Output data (CSVs, videos, plots, frames) — per-project roots and nested variant dirs
 */output/*.csv
 */output/*.mp4
 */output/*.png
 */output/frames/
+*/output/**/*.csv
+*/output/**/*.mp4
+*/output/**/*.png
+*/output/**/frames/
+
+# Raw run logs — per CLAUDE.md Rule 2 (progress/*.md is the human-readable record)
+*/logs/
+logs/
+
+# macOS metadata
+.DS_Store
+
+# Word lock files
+~$*
 
 # Python
 __pycache__/
