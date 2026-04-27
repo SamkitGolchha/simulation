@@ -564,7 +564,7 @@ def run_single(
         # ~1e-2; threshold is raised to 0.1 with headroom above it. Tilt gate
         # dropped to 10° (matches the regime where bushing collapses stabilise).
         ke_threshold = 0.1
-        min_tilt_deg = 10.0
+        min_tilt_deg = 45.0
     else:
         # Rigid spherical baseline — unchanged from setup333's main-branch run.
         ke_threshold = 0.01

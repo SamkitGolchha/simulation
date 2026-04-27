@@ -4,7 +4,7 @@ Invoked once per seed (1..5) by the parallel driver. Reads the active
 STIFFNESS_VARIANTS[0] triple and runs one simulation into
 output/bushing_K1e4/sim_<seed>.csv.
 
-Usage: python run_seed.py --seed <int>
+Usage: python scripts/run_seed.py --seed <int>
 """
 
 from __future__ import annotations
@@ -14,17 +14,19 @@ import os
 import sys
 import time
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument(
         "--out-dir",
-        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "output", "bushing_K1e4"),
+        default=os.path.join(PROJECT_ROOT, "output", "bushing_K1e4"),
     )
     args = parser.parse_args()
 
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, PROJECT_ROOT)
     from src.simulation_3x3x3 import STIFFNESS_VARIANTS, run_single  # noqa: E402
 
     label, k, c = STIFFNESS_VARIANTS[0]

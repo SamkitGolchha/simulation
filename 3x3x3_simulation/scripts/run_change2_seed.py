@@ -3,7 +3,7 @@
 Reads CHANGE2_VARIANTS[0] = ("K1e4_F3_P0_1", K=1e4, C=1e2, F_top=3.0, perturb=0.1)
 and runs one simulation into output/change_2/<label>/sim_<seed>.csv.
 
-Usage: python run_change2_seed.py --seed <int>
+Usage: python scripts/run_change2_seed.py --seed <int>
 """
 
 from __future__ import annotations
@@ -13,18 +13,19 @@ import os
 import sys
 import time
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, required=True)
     args = parser.parse_args()
 
-    project_root = os.path.dirname(os.path.abspath(__file__))
-    sys.path.insert(0, project_root)
+    sys.path.insert(0, PROJECT_ROOT)
     from src.simulation_3x3x3 import CHANGE2_VARIANTS, run_single  # noqa: E402
 
     label, k, c, f_top, perturb = CHANGE2_VARIANTS[0]
-    out_dir = os.path.join(project_root, "output", "change_2", label)
+    out_dir = os.path.join(PROJECT_ROOT, "output", "change_2", label)
     os.makedirs(out_dir, exist_ok=True)
     csv_path = os.path.join(out_dir, f"sim_{args.seed:03d}.csv")
 
