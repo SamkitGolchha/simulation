@@ -1,0 +1,9 @@
+# Generated artifacts — CSVs, videos, plots, frames (per CLAUDE.md Hard Rule 1)
+output/
+# Raw run logs — per CLAUDE.md Hard Rule 2 (progress/*.md is the human-readable record)
+logs/
+# Python
+__pycache__/
+*.pyc
+# macOS metadata
+.DS_Store
